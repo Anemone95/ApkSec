@@ -1,0 +1,5 @@
+*.exvim
+*.pyc
+*.exvim.*
+.idea
+test_apks

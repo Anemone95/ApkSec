@@ -1,0 +1,9 @@
+[Core]
+Name = Content Checker
+Module = content_checker.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = Check if the APK has some files (i.e., AndroidManifest.xml, res, smali).

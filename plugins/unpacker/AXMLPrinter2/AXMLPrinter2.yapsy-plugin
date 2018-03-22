@@ -1,0 +1,9 @@
+[Core]
+Name = AXMLPrinter
+Module = AXMLPrinter
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = AXMLPrinter2 Plugin

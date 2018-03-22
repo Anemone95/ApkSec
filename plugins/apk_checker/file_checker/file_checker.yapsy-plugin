@@ -1,0 +1,9 @@
+[Core]
+Name = File Checker
+Module = file_checker.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = Check apk with 'file' command

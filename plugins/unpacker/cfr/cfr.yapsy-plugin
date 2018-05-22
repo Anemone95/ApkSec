@@ -1,0 +1,9 @@
+[Core]
+Name = CFR
+Module = cfr.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://www.benf.org/other/cfr/
+Description = CFR decompiler.

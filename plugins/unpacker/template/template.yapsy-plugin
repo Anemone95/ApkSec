@@ -1,0 +1,9 @@
+[Core]
+Name = template
+Module = template.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = Check path exist and end with apk

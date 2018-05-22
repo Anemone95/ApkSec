@@ -1,9 +1,9 @@
 [Core]
-Name = AXMLPrinter
-Module = AXMLPrinter
+Name = aapt Checker
+Module = aapt.py
 
 [Documentation]
 Author = Anemone Xu
 Version = 0.1
 Website = http://test.com
-Description = AXMLPrinter2 Plugin
+Description = Check apk with 'file' command

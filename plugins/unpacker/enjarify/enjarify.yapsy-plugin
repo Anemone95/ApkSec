@@ -1,0 +1,9 @@
+[Core]
+Name = Enjarify
+Module = enjarify.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = https://github.com/Storyyeller/enjarify
+Description = Enjarify like dex2jar. But it is better than dex2jar.

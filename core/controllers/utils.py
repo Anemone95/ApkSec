@@ -5,18 +5,29 @@ import os
 import logging
 from core.controllers.file_provider import FileProvider
 
-def get_from_to(project_path, from_plugin, to_plugin, regex=None, magic=None):
-    fp = FileProvider(project_path)
-    ret = []
-    if regex:
-        files = fp.get_files(unpacker=from_plugin, regex=regex)
-    else:
-        files = fp.get_files(unpacker=from_plugin, magic=magic)
-    for f in files:
-        relative_path = f.split(from_plugin)[1].split(os.path.sep)
-        to_path = os.path.join(project_path, to_plugin, *relative_path)
-        ret.append((f, to_path))
-    return ret
+
+# def get_from_to(task_path, from_plugin, to_plugin, regex=None, magic=None):
+#     """
+#
+#     :param task_path: 扫描项目的地址
+#     :param from_plugin: 某个插件的类名
+#     :param to_plugin: 某个插件的类名
+#     :param regex: 使用正则
+#     :param magic: 使用模数
+#     :return: e.g. [(from.xml, to.xml)]
+#     """
+#     fp = FileProvider(task_path)
+#     ret = []
+#     if regex:
+#         files = fp.get_files(unpacker=from_plugin, regex=regex)
+#     else:
+#         files = fp.get_files(unpacker=from_plugin, magic=magic)
+#     for f in files:
+#         relative_path = f.split(from_plugin)[1].split(os.path.sep)
+#         to_path = os.path.join(task_path, to_plugin, *relative_path)
+#         ret.append((f, to_path))
+#     return ret
+
 
 def download(url, file_path, file_name):
     if not os.path.exists(file_path):

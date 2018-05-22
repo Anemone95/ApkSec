@@ -1,0 +1,9 @@
+[Core]
+Name = JavaCollector
+Module = java_collector.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = Collect other decompiler's results.

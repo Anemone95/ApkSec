@@ -1,0 +1,9 @@
+[Core]
+Name = Procyon
+Module = procyon.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = https://bitbucket.org/mstrobel/procyon/downloads/
+Description = Procyon decompiler.

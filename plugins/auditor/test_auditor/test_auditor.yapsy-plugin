@@ -1,0 +1,9 @@
+[Core]
+Name = Test Auditor
+Module = test_auditor.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = A example to write an auditor.

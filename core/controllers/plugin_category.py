@@ -36,7 +36,6 @@ class ApkSecPlugin(IPlugin):
         vuln = self.db.filter(name=name, plugin_name=self.plugin_name)
         if len(vuln):
             return
-        print self.db
         vuln = Vulnerability(
             name=name,
             i18n_name=i18n_name,
@@ -138,9 +137,6 @@ class Unpacker(ApkSecPlugin):
             files = self._failed_files()
             for each_file_type in files:
                 self.failed_files_cache[each_file_type] = Unpacker.__summary(files[each_file_type])
-            print self.plugin_name
-        else:
-            print 'Cache'
         return self.failed_files_cache
 
     @staticmethod

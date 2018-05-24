@@ -1,0 +1,9 @@
+[Core]
+Name = MobSF_Manifest
+Module = mobsf_manifest.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = https://github.com/MobSF/Mobile-Security-Framework-MobSF
+Description = Some rules for manifest.xml audit from MobSF.

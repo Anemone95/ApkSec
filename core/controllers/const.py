@@ -29,3 +29,10 @@ class ABILITY(Enum):
     C = 2
     B = 3
     A = 4
+
+@unique
+class RISK(Enum):
+    INFO = 0
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3

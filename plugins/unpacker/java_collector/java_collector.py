@@ -7,11 +7,9 @@ import core.controllers.plugin_category as plugin_category
 import core.controllers.ctrl_main as ctrl
 from core.controllers.const import *
 from core.controllers.utils import *
-from core.controllers.decorator import *
 from settings import *
 
 
-@singleton
 class JavaCollector(plugin_category.Unpacker):
     def __init__(self):
         plugin_category.Unpacker.__init__(self)

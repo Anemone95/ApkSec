@@ -22,6 +22,11 @@ class UnpackerException(Exception):
         Exception.__init__(self, error_str)
 
 
+class AuditorException(Exception):
+    def __init__(self, error_str):
+        Exception.__init__(self, error_str)
+
+
 class TaskInfoException(Exception):
     def __init__(self, error_str):
         Exception.__init__(self, error_str)

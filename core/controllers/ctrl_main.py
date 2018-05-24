@@ -3,7 +3,7 @@
 import logging
 import os
 import shutil
-from yapsy.PluginManager import PluginManager
+from yapsy.PluginManager import PluginManager, PluginManagerSingleton
 import settings
 from core.controllers import plugin_category as catg
 from core.controllers.task_info import TaskInfo
@@ -25,27 +25,17 @@ def get_manager():
     return manager
 
 
-def start(apk_path, ignore_plugin=[]):
-    apk_path = os.path.abspath(apk_path)
-    # Load the plugins from the plugin directory.
-
-    if not os.path.exists(apk_path):
-        logging.error("File not exist!")
-        exit(1)
-
-    # 建立项目目录
-    task_path = create_project_dir(apk_path)
-
+def init_task(task_path):
     task_info = TaskInfo()
     task_info.task_path = task_path
 
     manager = get_manager()
-    # # 初始化所有插件
-    # for each_plugin in manager.getAllPlugins():
-    #     each_plugin.plugin_object.__init__(task_path)
 
     logging.info("Get all plugins:" + str(map(lambda e: e.name, manager.getAllPlugins())))
+    return manager
 
+
+def launch_apk_checker(manager):
     # 运行 apk checker
     apk_checkers = manager.getPluginsOfCategory(catg.ApkChecker.category)
     logging.info("Get apk checkers plugins:" + str(map(lambda e: e.name, apk_checkers)))
@@ -55,6 +45,21 @@ def start(apk_path, ignore_plugin=[]):
     if False in res:
         logging.error("Invalid apk!")
         exit(2)
+
+
+def start(apk_path, ignore_plugin=[], pass_unpacker=False):
+    apk_path = os.path.abspath(apk_path)
+
+    if not os.path.exists(apk_path):
+        logging.error("File not exist!")
+        exit(1)
+
+    # 建立项目目录
+    task_path = create_project_dir(apk_path)
+    manager = init_task(task_path)
+
+    launch_apk_checker(manager)
+    TaskInfo().pass_unpacker = pass_unpacker
 
     '''运行 unpacker'''
     unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
@@ -90,4 +95,5 @@ def create_project_dir(apk_path):
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(filename)s : %(funcName)s() : %(message)s',
                         level=logging.INFO)
+    # start('../../test_apks/goatdroid.apk', pass_unpacker=True)
     start('../../test_apks/goatdroid.apk')

@@ -30,18 +30,13 @@ class Procyon(plugin_category.Unpacker):
         failed_pattern = "This method could not be decompiled."
         failed_files = []
         for root, dirs, files in os.walk(self.plugin_task_path):
-            for f in files:
-                file_path = os.path.join(root, f)
+            for each_file in files:
+                file_path = os.path.join(root, each_file)
                 with open(file_path, 'r') as f:
                     failed_times = f.read().count(failed_pattern)
                     for i in xrange(failed_times):
                         failed_files.append(file_path)
-        failed_classes = []
-        for each_file_path in failed_files:
-            java_class = self.path2class(each_file_path)
-            failed_classes.append(java_class)
-
-        return {TYPE.JAVA_CLASS: failed_classes}
+        return {TYPE.JAVA: failed_files}
 
     def start(self):
         if not self.success:
@@ -57,12 +52,12 @@ class Procyon(plugin_category.Unpacker):
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        _, err = process.communicate()
+        sout, serr = process.communicate()
 
-        # err = process.stderr.read()
         if process.returncode != 0:
-            raise UnpackerException("Procyon error: " + err)
-            # print process.stdout.read()
+            raise UnpackerException("Procyon error: " + serr)
+        if len(serr):
+            raise UnpackerException("Procyon error: " + serr)
 
 
 if __name__ == '__main__':

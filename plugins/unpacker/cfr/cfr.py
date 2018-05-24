@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
-import zipfile
-
 import subprocess
 
 import core.controllers.plugin_category as plugin_category
 from core.controllers.apksec_exceptions import UnpackerException
 from core.controllers.const import *
-from core.controllers.task_info import TaskInfo
+import core.controllers.ctrl_main as ctrl
 from core.controllers.utils import *
 from settings import *
 
 
 class CFR(plugin_category.Unpacker):
-    def __init__(self, task_path=None):
+    def __init__(self):
         plugin_category.Unpacker.__init__(self)
         url = "http://www.benf.org/other/cfr/cfr_0_129.jar"
         name = "cfr.jar"
@@ -28,13 +26,15 @@ class CFR(plugin_category.Unpacker):
         return {TYPE.JAVA: ABILITY.B}
 
     def _failed_files(self):
-        with open(os.path.join(self.plugin_task_path,'summary.txt'), 'r') as f:
-            summary=f.readlines()
-        failed_classes=[]
-        for row in xrange(len(summary)):
-            if summary[row].startswith('---------'):
-                failed_classes.append(summary[row-1].strip('\n').strip('\r'))
-        return {TYPE.JAVA_CLASS: failed_classes}
+        with open(os.path.join(self.plugin_task_path, 'summary.txt'), 'r') as f:
+            summary = f.read()
+        failed_files = []
+        for each_classes in summary.split('\n\n\n')[1:]:
+            lines = each_classes.split('\n')
+            for each_line in lines:
+                if each_line.startswith('  '):
+                    failed_files.append(self.class2abspath(lines[0]))
+        return {TYPE.JAVA: failed_files}
 
     def start(self):
         if not self.success:
@@ -49,11 +49,16 @@ class CFR(plugin_category.Unpacker):
                                                                     output_dir=self.plugin_task_path),
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.PIPE)
         sout, serr = process.communicate()
+        # 状态码为0,所有正常输出在err通道,错误输出输出在out通道
+        if len(sout):
+            raise UnpackerException(sout)
 
 
 if __name__ == '__main__':
-    TaskInfo().task_path = r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apksec'
+    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', pass_unpacker=True)
     cfr = CFR()
-    print cfr.failed_files
+    for each in cfr.success_files(only_java=True):
+        print each
+

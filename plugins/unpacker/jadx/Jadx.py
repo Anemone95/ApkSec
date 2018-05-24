@@ -7,7 +7,7 @@ import re
 
 import core.controllers.plugin_category as plugin_category
 from core.controllers.const import *
-from core.controllers.task_info import TaskInfo
+import core.controllers.ctrl_main as ctrl
 from core.controllers.utils import *
 from core.controllers.apksec_exceptions import UnpackerException
 from settings import *
@@ -39,9 +39,15 @@ class Jadx(plugin_category.Unpacker):
         for each_log in logs:
             res = regex.match(each_log)
             if res:
-                print each_log, res.group(1)
                 error_classes.append(res.group(1))
-        return {TYPE.JAVA_CLASS: error_classes}
+        error_files = []
+        for each_class in error_classes:
+            error_file = self.class2abspath(each_class)
+            if not os.path.exists(error_file):
+                error_class = '.'.join(each_class.split('.')[:-1])
+                error_file = self.class2abspath(error_class)
+            error_files.append(error_file)
+        return {TYPE.JAVA: error_files}
 
     def start(self):
         if not self.success:
@@ -61,6 +67,7 @@ class Jadx(plugin_category.Unpacker):
 
 
 if __name__ == '__main__':
-    TaskInfo().task_path = r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apksec'
+    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', pass_unpacker=True)
     jadx = Jadx()
-    print jadx.failed_files
+    # print jadx.failed_files
+    # print jadx.success_files(only_java=True)

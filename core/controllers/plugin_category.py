@@ -10,7 +10,6 @@ from core.controllers.file_provider import FileProvider
 from core.controllers.task_info import TaskInfo
 from vulnerability import Vulnerability
 from vulnerability_database import VulnerabilityDatabase
-import settings
 
 
 class ApkSecPlugin(IPlugin):
@@ -23,6 +22,7 @@ class ApkSecPlugin(IPlugin):
         self.file_provider = FileProvider()
         self.plugin_name = self.__class__.__name__
         self.db = VulnerabilityDatabase()
+        self.task_info = TaskInfo()
 
     @property
     def task_path(self):
@@ -104,7 +104,7 @@ class Unpacker(ApkSecPlugin):
     def _failed_files(self):
         """
         插件复写该方法，返回解析失败的文件类型和列表
-        :return: {FILE_TYPE.JAVA:[aaa.java,bbb.java,...]}
+        :return: {FILE_TYPE.JAVA:[aaa.java,bbb.java,...]} 返回绝对路径
         """
         return {}
 
@@ -129,6 +129,7 @@ class Unpacker(ApkSecPlugin):
         使用 plugin.failed_files[FILE_TYPE].keys() 可以获得某类文件集合
         :return: {FILE_TYPE: {"aaa.java":1} }
         """
+        # TODO 由于类不是单例，所以没用
         if not self.failed_files_cache:
             self.failed_files_cache = {}
             files = self._failed_files()
@@ -167,6 +168,30 @@ class Unpacker(ApkSecPlugin):
         """
         return self._ability()
 
+    def success_files(self, only_java=False):
+        """
+
+        :param only_java: 打开该选项则只返回本包的java文件
+        :return: 返回绝对路径
+        """
+        failed_files = []
+        # 这里获取了所有错误的文件，self.failed_files.values()原格式为字典，隐式转换为列表
+        map(failed_files.extend, self.failed_files.values())
+
+        list_dirs = os.walk(self.plugin_task_path)
+        ret = []
+        for root, dirs, files in list_dirs:
+            for f in files:
+                file_path = os.path.join(root, f)
+                if only_java:
+                    if self.task_info.package_name.replace('.', os.path.sep) not in file_path:
+                        continue
+                ret.append(file_path)
+
+        failed = set(failed_files)
+        succ = set(ret) - failed
+        return succ
+
     def start(self):
         """
         :return: True/False 解压成功/失败
@@ -178,29 +203,32 @@ class Unpacker(ApkSecPlugin):
         只有成功解压的才注册unpacker
         :return:
         """
-        res = ApkSecPlugin.plugin_launch(self)
+        if self.task_info.pass_unpacker:
+            res = None
+        else:
+            res = ApkSecPlugin.plugin_launch(self)
         self.file_provider.register_unpacker(self)
         return res
 
-    def path2class(self, file_path):
-        java_class = os.path.relpath(os.path.splitext(file_path)[0], self.plugin_task_path).replace(os.path.sep, '.')
+    def path2class(self, file_path, plugin_task_path=None):
+        if not plugin_task_path:
+            plugin_task_path = self.plugin_task_path
+        java_class = os.path.relpath(os.path.splitext(file_path)[0], plugin_task_path) \
+            .replace(os.path.sep, '.')
         return java_class
 
-    def find__java_class(self, failed_pattern):
-        failed_files = []
-        for root, dirs, files in os.walk(self.plugin_task_path):
-            for f in files:
-                file_path = os.path.join(root, f)
-                with open(file_path, 'r') as f:
-                    failed_times = f.read().count(failed_pattern)
-                    for i in xrange(failed_times):
-                        failed_files.append(file_path)
-        failed_classes = []
-        for each_file_path in failed_files:
-            java_class = self.path2class(each_file_path)
-            failed_classes.append(java_class)
+    def class2relpath(self, java_class):
+        path = os.path.join('{}.java'.format(java_class.replace('.', os.path.sep)))
+        return path
 
-        return {TYPE.JAVA_CLASS: failed_classes}
+    def class2abspath(self, java_class, plugin_task_path=None):
+        if not plugin_task_path:
+            plugin_task_path = self.plugin_task_path
+        path = os.path.join(plugin_task_path, self.class2relpath(java_class))
+        return path
+
+    def abspath2relpath(self, abs_path):
+        return os.path.sep.join(os.path.relpath(abs_path, self.task_path).split(os.path.sep)[2:])
 
 
 class ProtectChecker(ApkSecPlugin):
@@ -217,7 +245,7 @@ class ProtectChecker(ApkSecPlugin):
 class Auditor(ApkSecPlugin):
     category = "auditor"
 
-    def __init__(self, task_path=None):
+    def __init__(self):
         ApkSecPlugin.__init__(self)
         self.plugin_task_path = os.path.join(self.task_path, "auditor", self.plugin_name)
         if self.plugin_name != "Auditor" and not os.path.exists(self.plugin_task_path):

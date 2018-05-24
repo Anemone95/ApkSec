@@ -8,7 +8,7 @@ from settings import *
 
 
 class Template(plugin_category.Unpacker):
-    def __init__(self, task_path=None):
+    def __init__(self):
         plugin_category.Unpacker.__init__(self)
         """do something"""
 

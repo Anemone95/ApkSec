@@ -8,10 +8,10 @@ from core.controllers import plugin_category as catg, ctrl_main
 from core.controllers.const import TYPE
 
 
-def topsort(G):
+def topsort(graph):
     """
     Usage:
-    G = {
+    graph = {
         'a': 'bc',
         'b': 'd',
         'c': 'de',
@@ -19,34 +19,35 @@ def topsort(G):
         'e': '',
     }
 
-    print topsort(G)
+    print topsort(graph)
     [['a'], ['c', 'b'], ['d'], ['e']]
 
-    :param G: 图
+    :param graph: 图
     :return: [['a'], ['c', 'b'], ['d'], ['e']], 在同一列表中表示可以并行
     """
-    in_degrees = dict((u, 0) for u in G)
-    for u in G:
-        for v in G[u]:
+    in_degrees = dict((u, 0) for u in graph)
+    for u in graph:
+        for v in graph[u]:
             in_degrees[v] += 1
             # 每一个节点的入度
-    Q = [u for u in G if in_degrees[u] == 0]
+    _Q = [u for u in graph if in_degrees[u] == 0]
     # 入度为 0 的节点
-    S = []
-    while Q:
+    order = []
+    while _Q:
         parallel_queue = []
-        while Q:
-            u = Q.pop()
+        while _Q:
+            u = _Q.pop()
             parallel_queue.append(u)
             # 默认从最后一个移除
-        S.append(parallel_queue)
+        order.append(parallel_queue)
         for u in parallel_queue:
-            for v in G[u]:
+            for v in graph[u]:
                 in_degrees[v] -= 1
                 # 并移除其指向
                 if in_degrees[v] == 0:
-                    Q.append(v)
-    return S
+                    _Q.append(v)
+    return order
+
 
 def unpacker_schedule(unpackers):
     """
@@ -72,7 +73,7 @@ def unpacker_schedule(unpackers):
 
 if __name__ == '__main__':
     manager = ctrl_main.get_manager()
-    unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
-    logging.info("Get unpacker plugins:" + str(map(lambda e: e.name, unpackers)))
-    schedule = unpacker_schedule(unpackers)
+    _unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
+    logging.info("Get unpacker plugins:" + str(map(lambda e: e.name, _unpackers)))
+    schedule = unpacker_schedule(_unpackers)
     print schedule

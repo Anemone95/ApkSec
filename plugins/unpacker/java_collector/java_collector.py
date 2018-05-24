@@ -6,13 +6,14 @@ import copy
 import core.controllers.plugin_category as plugin_category
 import core.controllers.ctrl_main as ctrl
 from core.controllers.const import *
-from core.controllers.task_info import TaskInfo
 from core.controllers.utils import *
+from core.controllers.decorator import *
 from settings import *
 
 
+@singleton
 class JavaCollector(plugin_category.Unpacker):
-    def __init__(self, task_path=None):
+    def __init__(self):
         plugin_category.Unpacker.__init__(self)
         """do something"""
 
@@ -59,9 +60,9 @@ class JavaCollector(plugin_category.Unpacker):
         log_improve += "Total: {}".format(len(set(successful_files_list)))
         logging.info(log_improve)
         for each_file in files_set:
-            unpacker_name = JavaCollector.get_file_from_succ_file(each_file, successful_files)
+            unpacker_name = get_file_from_succ_file(each_file, successful_files)
             if not unpacker_name:
-                unpacker_name = JavaCollector.get_file_from_failed_file(each_file, failed_files)
+                unpacker_name = get_file_from_failed_file(each_file, failed_files)
             src_path = os.path.join(self.task_path, 'unpacker', unpacker_name, each_file)
             dest_path = os.path.join(self.plugin_task_path, each_file)
             try:
@@ -70,25 +71,25 @@ class JavaCollector(plugin_category.Unpacker):
                 os.makedirs(os.path.dirname(dest_path))
                 shutil.copy(src_path, dest_path)
 
-    @staticmethod
-    def get_file_from_succ_file(filename, successful_files):
-        res = filter(lambda e: filename in e[1], successful_files.iteritems())
-        if len(res):
-            return res[0][0]
-        else:
-            return None
 
-    @staticmethod
-    def get_file_from_failed_file(filename, failed_files):
-        succ_decompiler = None
-        min_times = 999999
-        for each_decompiler in failed_files.keys():
-            if filename in failed_files[each_decompiler].keys():
-                if failed_files[each_decompiler][filename] < min_times:
-                    succ_decompiler = each_decompiler
-                    min_times = failed_files[each_decompiler][filename]
-                pass
-        return succ_decompiler
+def get_file_from_succ_file(filename, successful_files):
+    res = filter(lambda e: filename in e[1], successful_files.iteritems())
+    if len(res):
+        return res[0][0]
+    else:
+        return None
+
+
+def get_file_from_failed_file(filename, failed_files):
+    succ_decompiler = None
+    min_times = 999999
+    for each_decompiler in failed_files.keys():
+        if filename in failed_files[each_decompiler].keys():
+            if failed_files[each_decompiler][filename] < min_times:
+                succ_decompiler = each_decompiler
+                min_times = failed_files[each_decompiler][filename]
+            pass
+    return succ_decompiler
 
 
 if __name__ == '__main__':

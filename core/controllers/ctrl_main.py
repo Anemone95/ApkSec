@@ -7,7 +7,7 @@ from yapsy.PluginManager import PluginManager, PluginManagerSingleton
 import settings
 from core.controllers import plugin_category as catg
 from core.controllers.task_info import TaskInfo
-from vulnerability_database import VulnerabilityDatabase
+from core.controllers.vulnerability_database import VulnerabilityDatabase
 
 
 def get_manager():
@@ -78,7 +78,7 @@ def start(apk_path, ignore_plugin=[], pass_unpacker=False):
         each_plugin.plugin_object.plugin_launch()
 
     for e in VulnerabilityDatabase().list_database():
-        print e.to_dict()
+        print vars(e)
 
 
 def create_project_dir(apk_path):

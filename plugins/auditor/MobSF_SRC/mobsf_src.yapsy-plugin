@@ -1,0 +1,9 @@
+[Core]
+Name = MobSF_SRC
+Module = mobsf_src.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = https://github.com/MobSF/Mobile-Security-Framework-MobSF
+Description = Some rules for source code audit from MobSF.

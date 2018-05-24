@@ -8,10 +8,10 @@ import re
 import core.controllers.plugin_category as plugin_category
 from core.controllers.const import *
 import core.controllers.ctrl_main as ctrl
+from core.controllers.decorator import singleton
 from core.controllers.utils import *
 from core.controllers.apksec_exceptions import UnpackerException
 from settings import *
-
 
 class Jadx(plugin_category.Unpacker):
     def __init__(self):

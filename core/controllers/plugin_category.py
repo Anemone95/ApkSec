@@ -36,7 +36,7 @@ class ApkSecPlugin(IPlugin):
         vuln = self.db.filter(name=name, plugin_name=self.plugin_name)
         if len(vuln):
             return
-
+        print self.db
         vuln = Vulnerability(
             name=name,
             i18n_name=i18n_name,
@@ -46,6 +46,9 @@ class ApkSecPlugin(IPlugin):
             plugin_name=self.plugin_name
         )
         self.db.add(vuln)
+
+    def register_vulns(self):
+        pass
 
     def report_vuln(self, vuln_name, reference):
         logging.warning(
@@ -135,6 +138,9 @@ class Unpacker(ApkSecPlugin):
             files = self._failed_files()
             for each_file_type in files:
                 self.failed_files_cache[each_file_type] = Unpacker.__summary(files[each_file_type])
+            print self.plugin_name
+        else:
+            print 'Cache'
         return self.failed_files_cache
 
     @staticmethod
@@ -145,7 +151,6 @@ class Unpacker(ApkSecPlugin):
         return dic
 
     '''每一插件允许依赖某些插件产生的结果，但是只能依赖文件类型而不是依赖某个插件'''
-
     def _dependencies(self):
         return ()
 

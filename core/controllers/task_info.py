@@ -5,18 +5,17 @@ import os
 
 import settings
 from core.controllers.apksec_exceptions import TaskInfoException
+from core.controllers.decorator import singleton
 
 
+@singleton
 class TaskInfo(object):
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(TaskInfo, cls).__new__(cls, *args, **kwargs)
-            cls._instance.package_name = None
-            cls._instance.main_activity = None
-            cls._instance.target_sdk = None
-            cls._instance.finished_plugin = []
-            cls._instance.__task_path = None
-        return cls._instance
+    def __init__(self):
+        self.package_name = None
+        self.main_activity = None
+        self.target_sdk = None
+        self.finished_plugin = []
+        self.__task_path = None
 
     @property
     def task_path(self):

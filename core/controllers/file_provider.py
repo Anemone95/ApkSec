@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 import logging
-import os
 import re
 
 import apksec_exceptions
+from core.controllers.decorator import singleton
 
 
+@singleton
 class FileProvider(object):
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(FileProvider, cls).__new__(cls, *args, **kwargs)
-            cls._instance.files = {}
-            cls._instance.unpackers = []
-        return cls._instance
+    def __init__(self):
+        self.files = {}
+        self.unpackers = []
 
     def register_unpacker(self, unpacker):
         logging.info("Unpacker: {} registered.".format(unpacker))
         self.unpackers.append(unpacker)
 
-    def get_files(self, unpacker_name, regex=None, magic=None, only_success=True):
+    def get_files(self, unpacker_name, regex=None, magic=None):
         """
 
         :param unpacker_name: unpacker.name，用来获取某个unpacker文件夹下的类型文件

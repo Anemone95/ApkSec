@@ -26,11 +26,11 @@ class AAPT(plugin_category.ApkChecker):
         bin_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], 'bin', bin_path)
         process = subprocess.Popen('{aapt} dump badging {apk_path}'.format(aapt=bin_path, apk_path=self.apk_path),
                                    shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        err = process.stderr.read()
+        aapt_res, err = process.communicate()
         if len(err):
             logging.error('aapt error: {}'.format(err))
             return False
-        aapt_res = process.stdout.read().replace('\n', '').replace('\r', '')
+        aapt_res = aapt_res.replace('\n', '').replace('\r', '')
 
         regex_package_name = r"package: name='([a-z\.]*)'"
         match_res = re.match(regex_package_name, aapt_res)

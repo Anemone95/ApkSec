@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
-
+"""
+定义Manifest存在的问题
+"""
 import re
 
 manifest_desc = {

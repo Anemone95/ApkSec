@@ -1,23 +1,20 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 # from core.controllers import plugin_category
-import logging
 import core.controllers.plugin_category as plugin_category
 from core.controllers.vulnerability import Reference
+from core.controllers.const import RISK
 
 
 class TestAuditor(plugin_category.Auditor):
     def register_vulns(self):
-        self.register_vuln(name="test", i18n_name="test", description="Audit plugin example.", solution="",
-                           risk_level=0)
+        self.register_vuln(name="test", i18n_name="test", category="ttt", description="Audit plugin example.",
+                           solution="sss",
+                           risk_level=RISK.INFO)
 
     def start(self):
+        # self.report_vuln("test", Reference(location='aaa'))
         pass
-        # print self.file_provider.get_java_files()
-        # java_files = self.file_provider.get_files("Jadx", regex=".*\.java")
-        # logging.info("TestAuditor run.")
-        # for each in java_files:
-        #     self.report_vuln("test", Reference(location=each))
 
 
 if __name__ == '__main__':

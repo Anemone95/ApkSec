@@ -64,9 +64,8 @@ class FileProvider(object):
         """
         unpackers = filter(lambda e: file_type in e.ability.keys(), self.unpackers)
         unpackers.sort(key=lambda e: -e.ability[file_type].value)
-
         for each_unpacker in unpackers:
-            if len(each_unpacker.failed_files) == 0:
+            if len(each_unpacker.failed_files.get(file_type, {})) == 0:
                 return self.get_files(each_unpacker.plugin_name, regex='.*' + file_type.value)
         return self.get_files(unpackers[0].plugin_name, regex='.*' + file_type.value)
 

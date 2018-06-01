@@ -20,6 +20,9 @@ class FileChecker(plugin_category.ApkChecker):
             logging.warning("The system does not have 'file' command, so file checker doesn't work.")
             return True
         result = os.popen("file {}".format(self.apk_path))
-        if "JAR" not in result.readlines()[0]:
-            return False
-        return True
+        valid_fingerprints = ['JAR', 'Zip']
+        result = result.read()
+        for each_fingerprint in valid_fingerprints:
+            if each_fingerprint in result:
+                return True
+        return False

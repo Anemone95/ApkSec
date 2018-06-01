@@ -7,7 +7,7 @@ import re
 
 import core.controllers.plugin_category as plugin_category
 from core.controllers.const import *
-import core.controllers.ctrl_main as ctrl
+import core.controllers.controller as ctrl
 from core.controllers.decorator import singleton
 from core.controllers.utils import *
 from core.controllers.apksec_exceptions import UnpackerException
@@ -28,7 +28,7 @@ class Jadx(plugin_category.Unpacker):
 
     def _ability(self):
         return {TYPE.JAVA: ABILITY.B,
-                TYPE.MANIFEST: ABILITY.B,
+                TYPE.MANIFEST: ABILITY.A,
                 TYPE.XML: ABILITY.B}
 
     def _failed_files(self):
@@ -67,7 +67,7 @@ class Jadx(plugin_category.Unpacker):
 
 
 if __name__ == '__main__':
-    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', pass_unpacker=True)
+    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', skip_unpacker=True)
     jadx = Jadx()
     # print jadx.failed_files
     # print jadx.success_files(only_java=True)

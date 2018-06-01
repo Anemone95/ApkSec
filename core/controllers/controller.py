@@ -3,11 +3,11 @@
 import logging
 import os
 import shutil
-from yapsy.PluginManager import PluginManager, PluginManagerSingleton
+from yapsy.PluginManager import PluginManager
 import settings
 from core.controllers import plugin_category as catg
 from core.controllers.task_info import TaskInfo
-from core.controllers.vulnerability_database import VulnerabilityDatabase
+from core.controllers.report_database import ReportDatabase
 
 
 def get_manager():
@@ -43,11 +43,10 @@ def launch_apk_checker(manager):
     for each_plugin in apk_checkers:
         res.append(each_plugin.plugin_object.plugin_launch())
     if False in res:
-        logging.error("Invalid apk!")
         exit(2)
 
 
-def start(apk_path, ignore_plugin=[], pass_unpacker=False):
+def start(apk_path, ignore_plugin=[], skip_unpacker=False):
     apk_path = os.path.abspath(apk_path)
 
     if not os.path.exists(apk_path):
@@ -58,8 +57,9 @@ def start(apk_path, ignore_plugin=[], pass_unpacker=False):
     task_path = create_project_dir(apk_path)
     manager = init_task(task_path)
 
+    '''运行 checker'''
     launch_apk_checker(manager)
-    TaskInfo().pass_unpacker = pass_unpacker
+    TaskInfo().pass_unpacker = skip_unpacker
 
     '''运行 unpacker'''
     unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
@@ -77,11 +77,15 @@ def start(apk_path, ignore_plugin=[], pass_unpacker=False):
     for each_plugin in auditors:
         each_plugin.plugin_object.plugin_launch()
 
-    for e in VulnerabilityDatabase().list_database():
-        print vars(e)
+    return ReportDatabase().list_database()
 
 
 def create_project_dir(apk_path):
+    """
+
+    :param apk_path:  apk的路径（绝对路径相对路径都可以）
+    :return: 扫描任务绝对路径(在apk同级目录下，与当前目录无关）
+    """
     _dir, apk_file_name = os.path.split(apk_path)
     apk_name = apk_file_name.split('.')[0]
     task_path = os.path.join(_dir, "{}.apksec".format(apk_name))
@@ -95,5 +99,5 @@ def create_project_dir(apk_path):
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(filename)s : %(funcName)s() : %(message)s',
                         level=logging.INFO)
-    # start('../../test_apks/goatdroid.apk', pass_unpacker=True)
-    start('../../test_apks/goatdroid.apk')
+    # start('../../test_apks/Gnucash.apk', skip_unpacker=True)
+    start('../../test_apks/Gnucash.apk')

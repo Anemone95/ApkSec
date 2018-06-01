@@ -4,7 +4,7 @@ import logging
 
 import copy
 
-from core.controllers import plugin_category as catg, ctrl_main
+from core.controllers import plugin_category as catg, controller
 from core.controllers.const import TYPE
 
 
@@ -72,7 +72,7 @@ def unpacker_schedule(unpackers):
 
 
 if __name__ == '__main__':
-    manager = ctrl_main.get_manager()
+    manager = controller.get_manager()
     _unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
     logging.info("Get unpacker plugins:" + str(map(lambda e: e.name, _unpackers)))
     schedule = unpacker_schedule(_unpackers)

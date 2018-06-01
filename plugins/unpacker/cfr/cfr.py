@@ -5,7 +5,7 @@ import subprocess
 import core.controllers.plugin_category as plugin_category
 from core.controllers.apksec_exceptions import UnpackerException
 from core.controllers.const import *
-import core.controllers.ctrl_main as ctrl
+import core.controllers.controller as ctrl
 from core.controllers.utils import *
 from settings import *
 
@@ -57,7 +57,7 @@ class CFR(plugin_category.Unpacker):
 
 
 if __name__ == '__main__':
-    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', pass_unpacker=True)
+    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', skip_unpacker=True)
     cfr = CFR()
     for each in cfr.success_files(only_java=True):
         print each

@@ -4,7 +4,7 @@ import shutil
 import copy
 
 import core.controllers.plugin_category as plugin_category
-import core.controllers.ctrl_main as ctrl
+import core.controllers.controller as ctrl
 from core.controllers.const import *
 from core.controllers.utils import *
 from settings import *
@@ -91,6 +91,6 @@ def get_file_from_failed_file(filename, failed_files):
 
 
 if __name__ == '__main__':
-    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', pass_unpacker=True)
+    ctrl.start(r'D:\Store\document\all_my_work\CZY\ApkSec\test_apks\goatdroid.apk', skip_unpacker=True)
     javacollector = JavaCollector()
     javacollector.start()

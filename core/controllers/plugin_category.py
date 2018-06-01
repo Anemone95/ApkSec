@@ -8,8 +8,8 @@ from core.controllers.apksec_exceptions import *
 from core.controllers.const import TYPE
 from core.controllers.file_provider import FileProvider
 from core.controllers.task_info import TaskInfo
-from vulnerability import Vulnerability
-from vulnerability_database import VulnerabilityDatabase
+from vulnerability import Vulnerability, VulnReport
+from report_database import ReportDatabase
 
 
 class ApkSecPlugin(IPlugin):
@@ -21,8 +21,9 @@ class ApkSecPlugin(IPlugin):
         IPlugin.__init__(self)
         self.file_provider = FileProvider()
         self.plugin_name = self.__class__.__name__
-        self.db = VulnerabilityDatabase()
+        self.db = ReportDatabase()
         self.task_info = TaskInfo()
+        self.register_vulns()
 
     @property
     def task_path(self):
@@ -32,37 +33,39 @@ class ApkSecPlugin(IPlugin):
     def apk_path(self):
         return TaskInfo().apk_path
 
-    def register_vuln(self, name, i18n_name, description, solution, risk_level):
-        vuln = self.db.filter(name=name, plugin_name=self.plugin_name)
-        if len(vuln):
+    def register_vuln(self, vuln=None, name=None, i18n_name=None, category=None, description=None, solution=None,
+                      risk_level=None):
+        if not vuln:
+            vuln = Vulnerability(name=name, i18n_name=i18n_name, category=category, description=description,
+                                 solution=solution,
+                                 risk_level=risk_level)
+        report = self.db.filter(name=vuln.name, plugin_name=self.plugin_name)
+        if len(report):
             return
-        vuln = Vulnerability(
-            name=name,
-            i18n_name=i18n_name,
-            description=description,
-            solution=solution,
-            risk_level=risk_level,
-            plugin_name=self.plugin_name
-        )
-        self.db.add(vuln)
+        report = VulnReport(vuln, plugin_name=self.plugin_name)
+        self.db.add(report)
 
     def register_vulns(self):
         pass
 
-    def report_vuln(self, vuln_name, reference):
+    def report_vuln(self, vuln, reference):
+        if type(vuln) == str:
+            vuln_name = vuln
+        else:
+            vuln_name = vuln.name
+        report = self.db.filter(name=vuln_name, plugin_name=self.plugin_name)
+        if len(report) == 0:
+            err_str = "Database doesn't have this vulnerability"
+            raise PluginException(err_str)
+        elif len(report) > 1:
+            err_str = "Duplicate vulnerabilities. Check your plugin register"
+            raise PluginException(err_str)
+        report = report[0]
+        report.reference.append(reference)
         logging.warning(
-            "Find vulnerability: {vuln_name} in {location}".format(vuln_name=vuln_name, location=reference.location))
-        vuln = self.db.filter(name=vuln_name, plugin_name=self.plugin_name)
-        if len(vuln) == 0:
-            err_str = "Database doesn't have this vulnerability."
-            logging.error("Database doesn't have this vulnerability.")
-            raise PluginException(err_str)
-        elif len(vuln) > 1:
-            err_str = "Duplicate vulnerabilities. Check your plugin register."
-            logging.error(err_str)
-            raise PluginException(err_str)
-        vuln = vuln[0]
-        vuln.reference.append(reference)
+            "Plugin {plugin_name} find vulnerability: {vuln_name} in {location}".format(plugin_name=self.plugin_name,
+                                                                                        vuln_name=vuln_name,
+                                                                                        location=reference.location))
 
     def start(self):
         """
@@ -91,6 +94,12 @@ class ApkChecker(ApkSecPlugin):
         :return True/False 一个合法/不合法的Apk
         """
         raise NotImplementedError
+
+    def plugin_launch(self):
+        valid = ApkSecPlugin.plugin_launch(self)
+        if not valid:
+            logging.error("Plugin: {} detects input is an invalid apk".format(self.plugin_name))
+        return valid
 
 
 class Unpacker(ApkSecPlugin):
@@ -147,6 +156,7 @@ class Unpacker(ApkSecPlugin):
         return dic
 
     '''每一插件允许依赖某些插件产生的结果，但是只能依赖文件类型而不是依赖某个插件'''
+
     def _dependencies(self):
         return ()
 
@@ -251,7 +261,6 @@ class Auditor(ApkSecPlugin):
         self.plugin_task_path = os.path.join(self.task_path, "auditor", self.plugin_name)
         if self.plugin_name != "Auditor" and not os.path.exists(self.plugin_task_path):
             os.makedirs(self.plugin_task_path)
-        self.register_vulns()
 
     def register_vulns(self):
         logging.warning("{} doesn't register any vulnerability.".format(self.plugin_name))

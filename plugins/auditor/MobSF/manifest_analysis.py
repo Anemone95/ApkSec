@@ -778,38 +778,10 @@ def manifest_analysis(mfxml, man_data_dic):
                                   "title": a_title,
                                   "stat": a_template[1],
                                   "desc": a_desc})
-
         return ret_value
     except:
         PrintException("[ERROR] Performing Manifest Analysis")
 
 
-# def get_all_risk():
-#     return set(map(lambda e: manifest_desc[e][1], manifest_desc.keys()))
-
-
-# def get_raw_types_by_title(query="High Action Priority (xxxaaa)<br>[android:priority]"):
-#     sorted_name = sorted(list(manifest_desc), key=lambda e: e[0])
-#     for each in manifest_desc.keys():
-#         pattern = manifest_desc[each][0].replace("(", r"\(") \
-#             .replace(")", r"\)") \
-#             .replace("[", r"\[") \
-#             .replace("]", r"\]") \
-#             .replace("{", r"\{") \
-#             .replace("}", r"\}") \
-#             .replace("%s", r".*")
-#         pattern = re.compile(pattern)
-#         if pattern.search(query):
-#             return sorted_name.index(each), each, manifest_desc[each]
-
-
-def mobsf_wrapper(manifest_file):
-    parsed_xml = minidom.parse(manifest_file)
-    man_data_dic = manifest_data(parsed_xml)
-    man_an_dic = manifest_analysis(parsed_xml, man_data_dic)
-    return man_an_dic
-
-
 if __name__ == '__main__':
     manifest = "./AndroidManifest.xml"
-    print json.dumps(mobsf_wrapper(manifest))

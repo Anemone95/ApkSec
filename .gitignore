@@ -3,3 +3,4 @@
 *.exvim.*
 .idea
 test_apks
+*.log

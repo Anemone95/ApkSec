@@ -1,0 +1,3 @@
+[submodule "test/android-apps-crawler"]
+	path = test/android-apps-crawler
+	url = https://github.com/mssun/android-apps-crawler

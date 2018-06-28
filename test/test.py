@@ -2,7 +2,7 @@
 # coding=utf-8
 
 # @file test.py
-# @brief test
+# @brief 遍历test\android-apps-crawler\repo\apps文件夹，测试健壮性
 # @author x565178035,x565178035@126.com
 # @version 1.0
 # @date 2018-06-01 16:08
@@ -25,7 +25,7 @@ def test_dir(apk_dir):
 
 def test_single(apk_path):
     path, name=os.path.split(apk_path)
-    cmd='python {apksec} start -F {apkpath} -v > logs/{log}_std.log 2>logs/{log}_err.log'.format(apksec=APKSEC_PATH, apkpath=apk_path, log=name)
+    cmd='python {apksec} start -F {apkpath} -v -i Procyon 2>&1 | tee logs/{log}_std.log'.format(apksec=APKSEC_PATH, apkpath=apk_path, log=name)
     print cmd
     os.system(cmd)
 

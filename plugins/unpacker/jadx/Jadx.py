@@ -6,12 +6,15 @@ import zipfile
 import re
 
 import core.controllers.plugin_category as plugin_category
+import settings
+from core.controllers import const
 from core.controllers.const import *
 import core.controllers.controller as ctrl
 from core.controllers.decorator import singleton
 from core.controllers.utils import *
 from core.controllers.apksec_exceptions import UnpackerException
 from settings import *
+
 
 class Jadx(plugin_category.Unpacker):
     def __init__(self):
@@ -22,7 +25,8 @@ class Jadx(plugin_category.Unpacker):
         # 下不了
         self.success, zip_path = download(url, self.bin_dir, name)
         zip_file = zipfile.ZipFile(zip_path)
-        zip_file.extractall(path=self.bin_dir)
+        if not os.path.exists(path=self.bin_dir):
+            zip_file.extractall(path=self.bin_dir)
         self.bin_path = os.path.join(self.bin_dir, "bin", "jadx")
         self.log_file = os.path.join(self.plugin_task_path, "jadx.log")
 
@@ -53,17 +57,44 @@ class Jadx(plugin_category.Unpacker):
         if not self.success:
             logging.error("Jadx not exist.")
             return
+        # if settings.OS == const.WINDOWS:
+        #     self.bin_path = os.path.join(self.bin_dir, "bin", "jadx.bat")
+        #     process = subprocess.Popen(
+        #         "{bin_path} -d {plugin_path} {apk}".format(bin_path=self.bin_path,
+        #                                                    apk=self.apk_path,
+        #                                                    plugin_path=self.plugin_task_path),
+        #         shell=True,
+        #         stdout=subprocess.PIPE,
+        #         stderr=subprocess.PIPE)
+        # else:
+        #     self.bin_path = os.path.join(self.bin_dir, "bin", "jadx")
+        #     process = subprocess.Popen(
+        #         "JAVA_OPTS=\"-Xmx6G -Xms3G\" {bin_path} -d {plugin_path} {apk}".format(bin_path=self.bin_path,
+        #                                                    apk=self.apk_path,
+        #                                                    plugin_path=self.plugin_task_path),
+        #         shell=True,
+        #         stdout=subprocess.PIPE,
+        #         stderr=subprocess.PIPE)
         process = subprocess.Popen(
-            "{bin_path} -d {plugin_path} {apk} >{normal_log}".format(bin_path=self.bin_path,
-                                                                     apk=self.apk_path,
-                                                                     plugin_path=self.plugin_task_path,
-                                                                     normal_log=self.log_file,
-                                                                     ),
+            "{bin_path} -j 4 -d {plugin_path} {apk}".format(bin_path=self.bin_path,
+                                                            apk=self.apk_path,
+                                                            plugin_path=self.plugin_task_path),
             shell=True,
+            stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        _, err = process.communicate()
-        if len(err):
-            raise UnpackerException(err)
+        logs = []
+        for out_line in iter(process.stdout.readline, b''):
+            logging.debug(out_line.replace('\n', '').replace('\r', ''))
+            logs.append(out_line)
+        process.stdout.close()
+        process.wait()
+
+        errs = process.stderr.readlines()
+        process.stderr.close()
+        if len(errs):
+            raise UnpackerException(''.join(errs))
+        with open(self.log_file, 'w') as f:
+            f.writelines(logs)
 
 
 if __name__ == '__main__':

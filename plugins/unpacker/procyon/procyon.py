@@ -46,18 +46,27 @@ class Procyon(plugin_category.Unpacker):
             raise UnpackerException("No backup.jar")
         jar_path = jar_paths[0]
         process = subprocess.Popen(
-            "java -jar {procyon} {jar} -o {output_dir}".format(procyon=self.bin_path,
+            "java -Xmx10g -Xms4g -jar {procyon} {jar} -o {output_dir}".format(procyon=self.bin_path,
                                                                jar=jar_path,
                                                                output_dir=self.plugin_task_path),
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        sout, serr = process.communicate()
+
+        logs = []
+        for out_line in iter(process.stdout.readline, b''):
+            logging.debug(out_line.replace('\n', '').replace('\r', ''))
+            logs.append(out_line)
+        process.stdout.close()
+        process.wait()
+
+        errs = process.stderr.readlines()
+        process.stderr.close()
 
         if process.returncode != 0:
-            raise UnpackerException("Procyon error: " + serr)
-        if len(serr):
-            raise UnpackerException("Procyon error: " + serr)
+            raise UnpackerException("Procyon error: "+''.join(errs))
+        if len(errs):
+            raise UnpackerException("Procyon error: "+''.join(errs))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 """Usage:
-mt_console start -F <apk_dir> [-P param] [-v] [-d] [--skip-unpacker]
+mt_console start -F <apk_dir> [-v] [-i <ignore-plugins>] [--skip-unpacker]
 mt_console stop
 mt_console bash
 mt_console (-h|--help)
@@ -48,10 +48,10 @@ def _format(dic):
                 vulReferences=references)
 
 
-def start(path, log_level=logging.INFO, skip_unpacker=False):
+def start(path, ignore_plugins, log_level=logging.INFO, skip_unpacker=False):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(filename)s : %(funcName)s() : %(message)s',
                         level=log_level)
-    res = ctrl.start(path, skip_unpacker=skip_unpacker)
+    res = ctrl.start(path, skip_unpacker=skip_unpacker, ignore_plugins=ignore_plugins)
     res = filter(lambda vulns: vulns.reference, res)
     res = map(lambda e: _format(e.to_dict()), res)
     print json.dumps(res)
@@ -95,16 +95,18 @@ def main():
     arguments = docopt(__doc__, version='1.0.0')
     if arguments["start"]:
         if arguments["-v"]:
-            log_level = logging.INFO
-        elif arguments["-d"]:
             log_level = logging.DEBUG
         else:
             log_level = logging.ERROR
+        if arguments["-i"]:
+            ignore_plugins = arguments["<ignore-plugins>"].split(',')
+        else:
+            ignore_plugins = []
         if arguments["--skip-unpacker"]:
             skip_unpacker = True
         else:
             skip_unpacker = False
-        start(arguments["<apk_dir>"], log_level, skip_unpacker=skip_unpacker)
+        start(arguments["<apk_dir>"], log_level=log_level, skip_unpacker=skip_unpacker, ignore_plugins=ignore_plugins)
     elif arguments["stop"]:
         stop()
     elif arguments["bash"]:

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noodp, noydir"/>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    
+<meta name="data-spm" content="a2c44">
+<link rel="stylesheet" href="//g.alicdn.com/??aliyun/www-dpl/0.5.73/knight/css/global.css,aliyun/www-dpl/0.5.73/knight/css/iconfont.css,aliyun/www-dpl/0.5.73/knight/css/dpl.css"/>
+<link rel="stylesheet" href="//g.alicdn.com/aliyun/account/1.1.8/css/account_common.css?v=579226"/>
+    <link rel="stylesheet" href="//g.alicdn.com/aliyun/account/1.4.3/css/login/login2017.css?v=579226">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content=" 云服务器、云主机、弹性计算、云存储、开放存储、OSS、ACE、数据库、mysql、RDS、SQLSERVER、开发者、负载均衡、防攻击、防DDOS攻击、云监控、云浏览器、云地图、云邮箱、phpwind、阿里云、云产品、云计算、多线带宽、BGP、服务器环境配置、渲染云、云手机、云盾、应用托管、云引擎、解决方案 " name="keywords" />
+<meta content=" 阿里云，数据分享第一平台，云计算第一平台，云产品解决方案，享多线独享带宽，开发者合作平台，站长云集平台 " name="description" />
+<title> 登录 </title>
+<link rel="shortcut icon" href="//g.alicdn.com/aliyun/account/1.1.8/css/images/favicon-32.png" type="image/x-icon" />
+            <style>
+            body {font-family: "\5FAE\8F6F\96C5\9ED1", "Microsoft Yahei", "Hiragino Sans GB", tahoma, arial, "\5B8B\4F53" !important;}
+        </style>
+    
+    <script type="text/javascript" src="//www.aliyun.com/rgn/aliyun_assets?renderer=js"></script>
+    <script type="text/javascript" src="//g.alicdn.com/aliyun/static/0.0.4/retcode.js" crossorigin></script>
+</head>
+
+<body class="aliyun" data-spm="11131515"><script type="text/javascript">
+(function (d) {
+var t=d.createElement("script");t.type="text/javascript";t.async=true;t.id="tb-beacon-aplus";
+t.setAttribute("exparams","category=&userid=&aplus&yunid=&yunpk=");
+t.src=("https:"==d.location.protocol?"https://s":"http://a")+".tbcdn.cn/s/aplus_v2.js";
+d.getElementsByTagName("head")[0].appendChild(t);
+})(document);
+</script>
+
+    <div class="login-2017">
+        <div class="login-2017-topbar">
+            <script src="//g.alicdn.com/??aliyun/www-dpl/0.7.10/knight/common-icon.js"></script>
+
+            <a class="login-2017-topbar-logo" href="//www.aliyun.com">
+                <img class="black" style="z-index: 2;" src="//img.alicdn.com/tps/TB16hl5LpXXXXXRXVXXXXXXXXXX-198-46.png"/>
+                <img class="black" style="z-index: 1;" src="//img.alicdn.com/tps/TB1BQh7LpXXXXcJXFXXXXXXXXXX-198-46.gif"/>
+            </a>
+
+            <ul class="login-2017-link">
+                <li>
+                    <a href="//www.aliyun.com">首页</a>
+                </li>
+            </ul>
+
+            <div class="login-2017-site-switch">
+                <div class="login-2017-site-switch-box">
+                    <img src="//img.alicdn.com/tfs/TB18R7RRpXXXXabapXXXXXXXXXX-32-32.png"/>
+                    中国站
+                    <i class="dbl-icon-base-arrow-down"></i>
+                    <i class="dbl-icon-base-arrow-up"></i>
+                    <ul>
+                        <li choice="INTL"><a href="https://account-intl.aliyun.com/login/login.htm" target="_self">International</a></li>
+                        <li choice="JP"><a href="https://account-jp.aliyun.com/login/login.htm" target="_self">日本サイト</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-2017-body">
+            <div class="login-2017-body-box">
+
+                <div aliyun-lego-data="//www.aliyun.com/lego/2017/login"></div>
+
+                
+                <div id="login-module" style="
+    width: 380px;
+    height: 380px;
+    padding-top: 22px;
+    border: none;
+    position: absolute;
+    right: 0;
+">
+                    <div id="alibaba-login-iframe">
+                        <div id="alibaba-login-iframe-loading"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 判断国际域名是否可访-->
+    <script>
+        $(document).ready(function(){
+            function IsLoad(_url,callbackFun){
+                jQuery.ajax({
+                    url:_url,
+                    type:"get",
+                    cache: false,
+                    dataType: "jsonp", //跨域采用jsonp方式
+                    jsonp: "callback",
+                    timeout:1000, //超时时间，毫秒
+                    complete:function(XMLHttpRequest, textStatus){
+                        if(textStatus=="success"){
+                            window.document.cookie="ping_test=true;domain=.aliyun.com;path=/";
+                        }else{
+                            window.document.cookie="ping_test=false;domain=.aliyun.com;path=/";
+                        }
+
+                    },
+                    success:function(data) {
+                        console.log("Get success");
+                        callbackFun(data);
+                    },
+                    error:function(XMLHttpRequest, textStatus, errorThrown){
+                        console.log('Get error:'+textStatus);
+                    }
+                });
+            };
+            //调用
+            IsLoad('https://account-cn.alibabacloud.com/ping_servlet',function(res){
+                console.log(res);
+            });
+        });
+    </script>
+
+    <script type="text/javascript" src="//www.aliyun.com/rgn/aliyun_footer?renderer=js"></script>
+
+    <script>
+        function blockCookie(data) {
+             console.log(data);         }
+    </script>
+    <script src="/check_cookie?callback=blockCookie"></script>
+
+    <script>
+        (function($){
+            $('.aliyun-common-footer-white').removeClass('aliyun-common-footer-white');
+        })(jQuery)
+    </script>
+
+    <script src="//g.alicdn.com/aliyun/account/1.1.8/js/jQuery1.9.0.js?v=579226"></script>
+    <script src="https://g.alicdn.com/vip/havana-login/0.2.6/js/mini-login-embedder-min.js"></script>
+    <script src="//g.alicdn.com/aliyun/account/1.1.8/js/login/login.js?v=579226"></script>
+    <script>
+        var miniLoginEmbedder = new window.MiniLoginEmbedder();
+
+        //监听登录完成后的消息，resize已被监听
+        miniLoginEmbedder.addEvent('onMessage', function (args) {
+            var nCode = args.nCode ? args.nCode : "";
+            var rType = args.rType ? args.rType : "";
+            if (args.action && args.action == "hasLoginResult") {
+                if (args.st) {
+                    location.replace("/login/login_aliyun.htm?accounttraceid=ee428d04-d53f-4988-b092-2cc5226b7e83&st=" + args.st + "&nCode=" + nCode + "&rType=" + rType + "&params=%7B%22site%22%3A%226%22%2C%22umidToken%22%3A%22Y89316f4890da487b6c8f81ed2f67df78%22%2C%22ru%22%3A%22https%3A%2F%2Fhome.console.aliyun.com%2F%22%7D");
+                    return;
+                } else {
+                    location.replace(location.href);
+                    return;
+                }
+            }
+            if (args.action && args.action == "loginResult") {
+                if (args.st) {
+                    if (args.authSite) {
+                        location.replace("/login/login_aliyun.htm?accounttraceid=ee428d04-d53f-4988-b092-2cc5226b7e83&st=" + args.st + "&nCode=" + nCode + "&rType=" + rType + "&authSite=" + args.authSite + "&params=%7B%22site%22%3A%226%22%2C%22umidToken%22%3A%22Y89316f4890da487b6c8f81ed2f67df78%22%2C%22ru%22%3A%22https%3A%2F%2Fhome.console.aliyun.com%2F%22%7D");
+                    } else {
+                        location.replace("/login/login_aliyun.htm?accounttraceid=ee428d04-d53f-4988-b092-2cc5226b7e83&st=" + args.st + "&nCode=" + nCode + "&rType=" + rType + "&params=%7B%22site%22%3A%226%22%2C%22umidToken%22%3A%22Y89316f4890da487b6c8f81ed2f67df78%22%2C%22ru%22%3A%22https%3A%2F%2Fhome.console.aliyun.com%2F%22%7D");
+                    }
+                    return;
+                }
+            }
+        });
+
+        miniLoginEmbedder.init({
+            targetId: 'alibaba-login-iframe',
+            appName: 'aliyun',
+            appEntrance: 'aliyun',
+            iframeUrl: 'https://passport.alibaba.com/mini_login.htm',
+            lang: 'zh_CN',
+            notLoadSsoView: '',
+            notKeepLogin: 'true',
+            iframeHeight: '350',
+            queryStr: '&regUrl=https%3A%2F%2Faccount.aliyun.com%2Fregister%2Fregister.htm%3Foauth_callback%3Dhttps%253A%252F%252Fhome.console.aliyun.com%252F&returnUrl=https%3A%2F%2Faccount.aliyun.com%3A443%2Flogin%2Flogin_aliyun.htm%3Foauth_callback%3Dhttps%253A%252F%252Fhome.console.aliyun.com%252F',
+            loginId: ''
+        });
+    </script>
+    <script src="//g.alicdn.com/??aliyun/www-dpl/0.5.47/knight/js/util/aliyun-lego-system.js"></script>
+
+
+</body>
+</html>
+
+	<div  id="_umfp" style="display:inline;width:1px;height:1px;overflow:hidden">
+	<img src="https://ynuf.alipay.com/service/clear.png?xt=Y89316f4890da487b6c8f81ed2f67df78&xa=aliyun_idserver_mfa" />
+	</div>
+	<script type="text/javascript" src="https://assets.alicdn.com/g/security/umscript/2.0.7/um.js" charset="utf-8"></script>
+	<script type="text/javascript">
+	var container = document.getElementById('_umfp');
+	um.init({
+	    timeout: 3000,
+	    token: 'Y89316f4890da487b6c8f81ed2f67df78',
+	    timestamp: '83447088595F5D4456496D75',
+	    serviceUrl: 'https://ynuf.alipay.com/service/um.json',
+	    appName: 'aliyun_idserver_mfa',
+	    containers:{flash:container ,dcp:container}
+	});
+	</script>
+
+
+
+
+

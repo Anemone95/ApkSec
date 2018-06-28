@@ -5,6 +5,7 @@
 """
 import json
 import logging
+import xml
 from xml.dom import minidom
 
 import os
@@ -24,7 +25,11 @@ class MobSF_Manifest(plugin_category.Auditor):
 
     def start(self):
         manifest_file = self.file_provider.get_files_by_type(TYPE.MANIFEST)[0]
-        parsed_xml = minidom.parse(manifest_file)
+        try:
+            parsed_xml = minidom.parse(manifest_file)
+        except xml.parsers.expat.ExpatError:
+            raise plugin_category.AuditorException("Parse '{}' error.".format(manifest_file))
+
         man_data_dic = manifest_data(parsed_xml)
         man_an_list = manifest_analysis(parsed_xml, man_data_dic)
         for each_vuln in man_an_list:

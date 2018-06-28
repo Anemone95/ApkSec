@@ -46,7 +46,7 @@ def launch_apk_checker(manager):
         exit(2)
 
 
-def start(apk_path, ignore_plugin=[], skip_unpacker=False):
+def start(apk_path, ignore_plugins=[], skip_unpacker=False):
     apk_path = os.path.abspath(apk_path)
 
     if not os.path.exists(apk_path):
@@ -63,6 +63,7 @@ def start(apk_path, ignore_plugin=[], skip_unpacker=False):
 
     '''运行 unpacker'''
     unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
+    unpackers = filter(lambda e: e.name not in ignore_plugins, unpackers)
     logging.info("Get unpacker plugins:" + str(map(lambda e: e.name, unpackers)))
     from core.controllers.scheduler import unpacker_schedule
     schedule = unpacker_schedule(unpackers)
@@ -73,6 +74,7 @@ def start(apk_path, ignore_plugin=[], skip_unpacker=False):
 
     '''运行 auditor'''
     auditors = manager.getPluginsOfCategory(catg.Auditor.category)
+    auditors = filter(lambda e: e.name not in ignore_plugins, auditors)
     logging.info("Get auditor plugins:" + str(map(lambda e: e.name, auditors)))
     for each_plugin in auditors:
         each_plugin.plugin_object.plugin_launch()

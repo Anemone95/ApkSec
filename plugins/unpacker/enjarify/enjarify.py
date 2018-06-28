@@ -42,11 +42,15 @@ class Enjarify(plugin_category.Unpacker):
                                                                        command=command),
                                    shell=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, err_res = process.communicate()
 
-        if len(err_res):
-            raise UnpackerException(err_res)
-        logging.info(stdout[1][:-1])
+        for out_line in iter(process.stdout.readline, b''):
+            logging.debug(out_line.replace('\n', '').replace('\r', ''))
+        process.stdout.close()
+        process.wait()
+        errs = process.stderr.readlines()
+        process.stderr.close()
+        if len(errs):
+            raise UnpackerException(''.join(errs))
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ class FileProvider(object):
                 unpacker = each_unpacker
                 break
         if not unpacker:
-            err_str = "Unpacker: '{}' not in registered unpackers.".format(unpacker)
+            err_str = "Unpacker: '{}' not in registered unpackers.".format(unpacker_name)
             logging.error(err_str)
             raise apksec_exceptions.FileProviderException(err_str)
         # 缓存机制

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
+import subprocess
 
 import core.controllers.plugin_category as plugin_category
 from core.controllers.const import *
@@ -26,17 +27,20 @@ class Apktool(plugin_category.Unpacker):
         if not self.success:
             logging.error("Apktool not exist.")
             return
-        stats = os.system(
-            "java -jar {apktool_jar} d -f -o {output_path} {apk_path} >{normal_log} 2>{error_log}".format(
-                apktool_jar=self.bin_path,
-                apk_path=self.apk_path,
-                output_path=self.plugin_task_path,
-                normal_log=os.path.join(
-                    self.plugin_task_path, "apktool.log"),
-                error_log=os.path.join(
-                    self.plugin_task_path, "error.log")
-                ))
-        if stats != 0:
+        command = "java -jar {apktool_jar} d -f -o {output_path} {apk_path}".format(
+            apktool_jar=self.bin_path,
+            apk_path=self.apk_path,
+            output_path=self.plugin_task_path, )
+        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        for out_line in iter(p.stdout.readline, b''):
+            logging.debug(out_line.replace('\n', '').replace('\r', ''))
+        for err_line in iter(p.stderr.readline, b''):
+            logging.debug(err_line.replace('\n', '').replace('\r', ''))
+        p.stdout.close()
+        p.stderr.close()
+        p.wait()
+        if p.returncode != 0:
             raise plugin_category.UnpackerException("Apktool Failed")
 
 

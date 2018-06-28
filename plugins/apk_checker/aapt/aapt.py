@@ -39,11 +39,20 @@ class AAPT(plugin_category.ApkChecker):
         else:
             raise apksec_exceptions.ApkCheckerException("Unknown package name.")
 
-        regex_main_activity = r".*launchable\-activity: name='([a-zA-Z\.]*)'"
-        match_res = re.match(regex_main_activity, aapt_res)
-        if match_res:
-            _task_info.main_activity = match_res.group(1)
-        else:
+        has_main = False
+        if not has_main:
+            regex_main_activity = r".*launchable\-activity: name='([a-zA-Z0-9\.]*)'"
+            match_res = re.match(regex_main_activity, aapt_res)
+            if match_res:
+                _task_info.main_activity = match_res.group(1)
+                has_main = True
+        if not has_main:
+            regex_main_activity = r".*android:name=.([a-zA-Z0-9\.]*).*<intent-filter>.*action\.MAIN.*</intent-filter>"
+            match_res = re.match(regex_main_activity, aapt_res)
+            if match_res:
+                _task_info.main_activity = match_res.groups()[0]
+                has_main = True
+        if not has_main:
             raise apksec_exceptions.ApkCheckerException("Unknown main activity.")
 
         regex_target_sdk = r".*targetSdkVersion:'([1-9]\d*)'"
@@ -54,5 +63,22 @@ class AAPT(plugin_category.ApkChecker):
             raise apksec_exceptions.ApkCheckerException("Unknown target sdk.")
         return True
 
+
 if __name__ == '__main__':
-    pass
+    xml = '''
+<application android:banner="@drawable/app_banner" android:debuggable="false" android:hardwareAccelerated="true" android:icon="@drawable/app_icon" android:isGame="true" android:label="@string/app_name">
+<activity android:configChanges="fontScale|keyboard|keyboardHidden|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode" android:label="@string/app_name" android:launchMode="singleTask" android:name="com.unity3d.player.UnityPlayerNativeActivity" android:screenOrientation="sensorLandscape">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+        <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+    </intent-filter>
+    <meta-data android:name="unityplayer.UnityActivity" android:value="true"/>
+    <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true"/>
+</activity>
+<activity android:configChanges="keyboard|keyboardHidden|orientation" android:label="@string/app_name" android:name="com.unity3d.player.VideoPlayer"/>
+<activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" android:name="com.google.android.gms.ads.AdActivity"/>
+    '''.replace('\n', '').replace('\r', '')
+    regex_main_activity = r".*android:name=.([a-zA-Z0-9\.]*).*<intent-filter>.*action\.MAIN.*</intent-filter>"
+    match_res = re.match(regex_main_activity, xml)
+    print match_res.groups()[0]

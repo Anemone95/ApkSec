@@ -50,10 +50,16 @@ class CFR(plugin_category.Unpacker):
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        sout, serr = process.communicate()
-        # 状态码为0,所有正常输出在err通道,错误输出输出在out通道
-        if len(sout):
-            raise UnpackerException(sout)
+
+        for err_line in iter(process.stderr.readline, b''):
+            logging.debug(err_line.replace('\n', '').replace('\r', ''))
+        process.stderr.close()
+        process.wait()
+
+        errs = process.stdout.readlines()
+        process.stdout.close()
+        if len(errs):
+            raise UnpackerException(''.join(errs))
 
 
 if __name__ == '__main__':

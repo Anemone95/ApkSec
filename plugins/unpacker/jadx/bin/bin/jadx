@@ -157,4 +157,4 @@ function splitJvmOpts() {
 eval splitJvmOpts $DEFAULT_JVM_OPTS $JAVA_OPTS $JADX_OPTS
 
 
-exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" jadx.cli.JadxCLI "$@"
+exec "$JAVACMD" "-Xmx6G" -classpath "$CLASSPATH" jadx.cli.JadxCLI "$@"

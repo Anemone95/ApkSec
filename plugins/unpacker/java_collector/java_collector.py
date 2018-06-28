@@ -24,8 +24,9 @@ class JavaCollector(plugin_category.Unpacker):
     def start(self):
         manager = ctrl.get_manager()
         package_name = self.task_info.package_name
-        decompilers = manager.getPluginsOfCategory(plugin_category.Unpacker.category)
-        decompilers = map(lambda e: e.plugin_object, decompilers)
+        # decompilers = manager.getPluginsOfCategory(plugin_category.Unpacker.category)
+        # decompilers = map(lambda e: e.plugin_object, decompilers)
+        decompilers = self.file_provider.unpackers
         decompilers = filter(lambda e: TYPE.JAVA in e.failed_files, decompilers)
 
         """获取每个反编译插件的文件白名单"""

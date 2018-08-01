@@ -18,7 +18,6 @@ class ContentChecker(plugin_category.ApkChecker):
         needed_file = {"AndroidManifest.xml": False,
                        "classes.dex": False,
                        "META-INF": False,
-                       "res": False,
                        }
         zip_file = zipfile.ZipFile(self.apk_path)
         for name in zip_file.namelist():

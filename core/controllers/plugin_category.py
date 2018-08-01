@@ -214,10 +214,7 @@ class Unpacker(ApkSecPlugin):
         只有成功解压的才注册unpacker
         :return:
         """
-        if self.task_info.pass_unpacker:
-            res = None
-        else:
-            res = ApkSecPlugin.plugin_launch(self)
+        res = ApkSecPlugin.plugin_launch(self)
         self.file_provider.register_unpacker(self)
         return res
 

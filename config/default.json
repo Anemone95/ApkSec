@@ -1,0 +1,6 @@
+{
+  "apk_checkers":["AAPT","ContentChecker","FileChecker"],
+  "protect_checkers":[],
+  "unpackers":["Apktool","Jadx","Unzip"],
+  "auditors":["MobSF"]
+}

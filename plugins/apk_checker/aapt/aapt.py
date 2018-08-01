@@ -32,7 +32,7 @@ class AAPT(plugin_category.ApkChecker):
             return False
         aapt_res = aapt_res.replace('\n', '').replace('\r', '')
 
-        regex_package_name = r"package: name='([a-z\.]*)'"
+        regex_package_name = r"package: name='([0-9A-Za-z\._]*)'"
         match_res = re.match(regex_package_name, aapt_res)
         if match_res:
             _task_info.package_name = match_res.group(1)
@@ -53,14 +53,16 @@ class AAPT(plugin_category.ApkChecker):
                 _task_info.main_activity = match_res.groups()[0]
                 has_main = True
         if not has_main:
-            raise apksec_exceptions.ApkCheckerException("Unknown main activity.")
+            logging.warning("Unknown main activity.")
+            # raise apksec_exceptions.ApkCheckerException("Unknown main activity.")
 
         regex_target_sdk = r".*targetSdkVersion:'([1-9]\d*)'"
         match_res = re.match(regex_target_sdk, aapt_res)
         if match_res:
             _task_info.target_sdk = int(match_res.group(1))
         else:
-            raise apksec_exceptions.ApkCheckerException("Unknown target sdk.")
+            logging.warning("Unknown main activity.")
+            # raise apksec_exceptions.ApkCheckerException("Unknown target sdk.")
         return True
 
 

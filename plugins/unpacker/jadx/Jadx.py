@@ -4,6 +4,7 @@
 import subprocess
 import zipfile
 import re
+import tempfile
 
 import core.controllers.plugin_category as plugin_category
 import settings
@@ -32,7 +33,7 @@ class Jadx(plugin_category.Unpacker):
 
     def _ability(self):
         return {TYPE.JAVA: ABILITY.B,
-                TYPE.MANIFEST: ABILITY.A,
+                TYPE.MANIFEST: ABILITY.D,
                 TYPE.XML: ABILITY.B}
 
     def _failed_files(self):
@@ -75,24 +76,33 @@ class Jadx(plugin_category.Unpacker):
         #         shell=True,
         #         stdout=subprocess.PIPE,
         #         stderr=subprocess.PIPE)
+        #  out_temp=tempfile.SpooledTemporaryFile(bufsize=10*1024)
+        #  fileno=out_temp.fileno()
         process = subprocess.Popen(
-            "{bin_path} -j 4 -d {plugin_path} {apk}".format(bin_path=self.bin_path,
+            "{bin_path} -j 2 -d {plugin_path} {apk} 2>&1".format(bin_path=self.bin_path,
                                                             apk=self.apk_path,
                                                             plugin_path=self.plugin_task_path),
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.STDOUT)
         logs = []
-        for out_line in iter(process.stdout.readline, b''):
-            logging.debug(out_line.replace('\n', '').replace('\r', ''))
-            logs.append(out_line)
-        process.stdout.close()
+        return_code=process.poll()
+        while return_code is None:
+            line=process.stdout.readline()
+            line=line.strip()
+            logging.debug(line.replace('\n', '').replace('\r', ''))
+            logs.append(line)
+            return_code=process.poll()
+        #  for out_line in iter(process.stdout.readline, b''):
+            #  logging.debug(out_line.replace('\n', '').replace('\r', ''))
+            #  logs.append(out_line)
+        #  process.stdout.close()
         process.wait()
 
-        errs = process.stderr.readlines()
-        process.stderr.close()
-        if len(errs):
-            raise UnpackerException(''.join(errs))
+        # TODO find error
+        # process.stderr.close()
+        # if len(errs):
+        #     raise UnpackerException(''.join(errs))
         with open(self.log_file, 'w') as f:
             f.writelines(logs)
 

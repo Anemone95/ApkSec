@@ -7,7 +7,7 @@
 ##############################################################################
 
 # Add default JVM options here. You can also use JAVA_OPTS and JADX_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS=""
+DEFAULT_JVM_OPTS='"-Xms4g" "-Xmx6g"'
 
 APP_NAME="jadx"
 APP_BASE_NAME=`basename "$0"`
@@ -156,5 +156,4 @@ function splitJvmOpts() {
 }
 eval splitJvmOpts $DEFAULT_JVM_OPTS $JAVA_OPTS $JADX_OPTS
 
-
-exec "$JAVACMD" "-Xmx6G" -classpath "$CLASSPATH" jadx.cli.JadxCLI "$@"
+exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" jadx.cli.JadxCLI "$@"

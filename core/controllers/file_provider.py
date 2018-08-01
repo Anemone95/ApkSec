@@ -35,7 +35,7 @@ class FileProvider(object):
             logging.error(err_str)
             raise apksec_exceptions.FileProviderException(err_str)
         # 缓存机制
-        key = '{0}_{1}'.format(unpacker, regex if magic is None else magic)
+        key = '{0}_{1}_{2}'.format(unpacker.plugin_name, regex, magic)
         if key in self.files.keys():
             return self.files[key]
 
@@ -46,12 +46,21 @@ class FileProvider(object):
             for file_path in unpacker.success_files(only_java):
                 if pattern.match(file_path):
                     res.append(file_path)
-        elif magic:
-            for file_path in unpacker.success_files():
-                with open(file_path, 'r') as _file:
-                    file_magic = _file.read(12)
-                    if file_magic.startswith(magic):
-                        res.append(file_path)
+        if magic:
+            if len(res) == 0:
+                for file_path in unpacker.success_files():
+                    with open(file_path, 'r') as _file:
+                        file_magic = _file.read(12)
+                        if file_magic.startswith(magic):
+                            res.append(file_path)
+            else:
+                filtered_res = []
+                for file_path in res:
+                    with open(file_path, 'r') as _file:
+                        file_magic = _file.read(12)
+                        if file_magic.startswith(magic):
+                            filtered_res.append(file_path)
+                res = filtered_res
 
         self.files[key] = res
         return res
@@ -63,11 +72,16 @@ class FileProvider(object):
         :return:
         """
         unpackers = filter(lambda e: file_type in e.ability.keys(), self.unpackers)
+        # 寻找能力最强的解包器
         unpackers.sort(key=lambda e: -e.ability[file_type].value)
         for each_unpacker in unpackers:
             if len(each_unpacker.failed_files.get(file_type, {})) == 0:
-                return self.get_files(each_unpacker.plugin_name, regex='.*' + file_type.value)
-        return self.get_files(unpackers[0].plugin_name, regex='.*' + file_type.value)
+                return self.get_files(each_unpacker.plugin_name,
+                                      regex=".*"+file_type.value["filename"],
+                                      magic=file_type.value["magic"])
+        return self.get_files(unpackers[0].plugin_name,
+                              regex=".*"+file_type.value["filename"],
+                              magic=file_type.value["magic"])
 
 
 if __name__ == '__main__':

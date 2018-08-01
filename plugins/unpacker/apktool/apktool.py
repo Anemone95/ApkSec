@@ -20,7 +20,7 @@ class Apktool(plugin_category.Unpacker):
         return {TYPE.SMALI: ABILITY.B,
                 TYPE.ELF: ABILITY.B,
                 TYPE.XML: ABILITY.B,
-                TYPE.MANIFEST: ABILITY.C,
+                TYPE.MANIFEST: ABILITY.B,
                 }
 
     def start(self):

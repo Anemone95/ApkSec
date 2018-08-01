@@ -1,5 +1,5 @@
 [Core]
-Name = MobSF_Manifest
+Name = MobSF
 Module = mobsf_manifest.py
 
 [Documentation]

@@ -25,7 +25,7 @@ def test_dir(apk_dir):
 
 def test_single(apk_path):
     path, name=os.path.split(apk_path)
-    cmd='python {apksec} start -F {apkpath} -v -i Procyon 2>&1 | tee logs/{log}_std.log'.format(apksec=APKSEC_PATH, apkpath=apk_path, log=name)
+    cmd='python {apksec} start -F {apkpath} -v 2>&1 | tee logs/{log}_std.log'.format(apksec=APKSEC_PATH, apkpath=apk_path, log=name)
     print cmd
     os.system(cmd)
 

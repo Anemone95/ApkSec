@@ -1,5 +1,5 @@
 [Core]
-Name = template
+Name = Template
 Module = template.py
 
 [Documentation]

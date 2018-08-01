@@ -1,5 +1,5 @@
 [Core]
-Name = File Checker
+Name = FileChecker
 Module = file_checker.py
 
 [Documentation]

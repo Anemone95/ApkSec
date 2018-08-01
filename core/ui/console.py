@@ -27,4 +27,4 @@ def stop(apk_name):
 
 
 if __name__ == '__main__':
-    print start('../../test_apks/goatdroid.apk')
+    print start('../../test_apks/goatdroid.apk', log_level=logging.DEBUG)

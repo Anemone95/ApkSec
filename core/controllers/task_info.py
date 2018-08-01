@@ -16,6 +16,7 @@ class TaskInfo(object):
         self.target_sdk = None
         self.finished_plugin = []
         self.__task_path = None
+        self.apksec_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '..')
 
     @property
     def task_path(self):

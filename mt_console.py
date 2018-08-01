@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 """Usage:
-mt_console start -F <apk_dir> [-v] [-i <ignore-plugins>] [--skip-unpacker]
+mt_console start -F <apk_dir> [-v] [--config <config_file>]
 mt_console stop
 mt_console bash
 mt_console (-h|--help)
@@ -41,17 +41,18 @@ def _format(dic):
                 updateTime=dic['update_time'],
                 description=dic['vulnerability']['description'],
                 vulType=0,
-                riskLevel=dic['vulnerability']['risk_level'] + 1,
+                riskLevel=dic['vulnerability']['risk_level'],
                 targetTaskId=0,
                 solution=dic['vulnerability']['solution'],
                 source='android_apk',
+                extra={"category":dic['vulnerability']['category']},
                 vulReferences=references)
 
 
-def start(path, ignore_plugins, log_level=logging.INFO, skip_unpacker=False):
+def start(path, log_level=logging.INFO, config_path=None):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(filename)s : %(funcName)s() : %(message)s',
                         level=log_level)
-    res = ctrl.start(path, skip_unpacker=skip_unpacker, ignore_plugins=ignore_plugins)
+    res = ctrl.start(path, config_path)
     res = filter(lambda vulns: vulns.reference, res)
     res = map(lambda e: _format(e.to_dict()), res)
     print json.dumps(res)
@@ -98,15 +99,12 @@ def main():
             log_level = logging.DEBUG
         else:
             log_level = logging.ERROR
-        if arguments["-i"]:
-            ignore_plugins = arguments["<ignore-plugins>"].split(',')
+        if arguments["--config"]:
+            config_path = arguments["<config_file>"]
         else:
-            ignore_plugins = []
-        if arguments["--skip-unpacker"]:
-            skip_unpacker = True
-        else:
-            skip_unpacker = False
-        start(arguments["<apk_dir>"], log_level=log_level, skip_unpacker=skip_unpacker, ignore_plugins=ignore_plugins)
+            config_path = None
+        start(arguments["<apk_dir>"], log_level=log_level, config_path=config_path)
+
     elif arguments["stop"]:
         stop()
     elif arguments["bash"]:

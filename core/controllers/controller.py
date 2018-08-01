@@ -8,6 +8,7 @@ import settings
 from core.controllers import plugin_category as catg
 from core.controllers.task_info import TaskInfo
 from core.controllers.report_database import ReportDatabase
+import json
 
 
 def get_manager():
@@ -31,7 +32,7 @@ def init_task(task_path):
 
     manager = get_manager()
 
-    logging.info("Get all plugins:" + str(map(lambda e: e.name, manager.getAllPlugins())))
+    logging.info("Find plugins:" + str(map(lambda e: e.name, manager.getAllPlugins())))
     return manager
 
 
@@ -46,7 +47,13 @@ def launch_apk_checker(manager):
         exit(2)
 
 
-def start(apk_path, ignore_plugins=[], skip_unpacker=False):
+def load_config(config_path):
+    with open(config_path, 'r') as config_file:
+        config = json.loads("".join(config_file.readlines()))
+    return config
+
+
+def start(apk_path, config_path=None):
     apk_path = os.path.abspath(apk_path)
 
     if not os.path.exists(apk_path):
@@ -57,14 +64,19 @@ def start(apk_path, ignore_plugins=[], skip_unpacker=False):
     task_path = create_project_dir(apk_path)
     manager = init_task(task_path)
 
+    task_info = TaskInfo()
+    if not config_path:
+        config_path = task_info.apksec_path
+    plugins = load_config(os.path.join(config_path, 'config','default.json'))
+
     '''运行 checker'''
     launch_apk_checker(manager)
-    TaskInfo().pass_unpacker = skip_unpacker
 
     '''运行 unpacker'''
     unpackers = manager.getPluginsOfCategory(catg.Unpacker.category)
-    unpackers = filter(lambda e: e.name not in ignore_plugins, unpackers)
+    unpackers = filter(lambda e: e.name in plugins["unpackers"], unpackers)
     logging.info("Get unpacker plugins:" + str(map(lambda e: e.name, unpackers)))
+    # 防止循环import
     from core.controllers.scheduler import unpacker_schedule
     schedule = unpacker_schedule(unpackers)
     for each_parallel in schedule:
@@ -74,7 +86,7 @@ def start(apk_path, ignore_plugins=[], skip_unpacker=False):
 
     '''运行 auditor'''
     auditors = manager.getPluginsOfCategory(catg.Auditor.category)
-    auditors = filter(lambda e: e.name not in ignore_plugins, auditors)
+    auditors = filter(lambda e: e.name in plugins["auditors"], auditors)
     logging.info("Get auditor plugins:" + str(map(lambda e: e.name, auditors)))
     for each_plugin in auditors:
         each_plugin.plugin_object.plugin_launch()

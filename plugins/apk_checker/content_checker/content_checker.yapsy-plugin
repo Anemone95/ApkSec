@@ -1,5 +1,5 @@
 [Core]
-Name = Content Checker
+Name = ContentChecker
 Module = content_checker.py
 
 [Documentation]

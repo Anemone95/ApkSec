@@ -11,14 +11,16 @@ X64 = " 64bit"
 @unique
 class TYPE(Enum):
     AXML = 0
-    XML = 1
+    XML = {"filename": ".xml", "magic": "\x3c\x3f\x78\x6d\x6c"}
     ELF = 2
     DEX = '.dex'
     SMALI = 4
-    JAVA = '.java'
-    JAR = '.jar'
-    MANIFEST = 'AndroidManifest.xml'
-    APK = 'backup.apk'
+    JAVA = {"filename": ".java", "magic": None}
+    JAR = {"filename": ".jar", "magic": None}
+    MANIFEST = {
+        "filename": "AndroidManifest.xml",
+        "magic": "\x3c\x3f\x78\x6d\x6c"}
+    APK = {"filename": ".apk", "magic": None}
     JAVA_CLASS = 5
 
 
@@ -29,6 +31,7 @@ class ABILITY(Enum):
     C = 2
     B = 3
     A = 4
+
 
 @unique
 class RISK(Enum):

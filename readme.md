@@ -29,6 +29,23 @@ apk 解包/反编译插件是最重要的插件类型之一，它们从apk中提
 ## 审计插件（Auditor）
 审计插件同样重要，它们从核心索要其必须的文件，并且向核心报告审计结果。为了控制检测项质量，它们首先需要向核心注册自己的检测项（当然它们可以注册核心中给出的检测项），这与普通的Web扫描不同，因为Web扫描的检测项固定且不变化，而Apk的检测项会随系统版本、业界研究动态等外界因素变化。它们只能报告自己注册过的检测项。
 
+# 用法
+
+```bash
+λ python mt_console.py
+Usage:
+mt_console start -F <apk_dir> [-v] [--config <config_file>]
+mt_console stop
+mt_console bash
+mt_console (-h|--help)
+
+```
+
+
+
 ## TODO
 
 解决jadx调试模式下卡死问题
+
+
+

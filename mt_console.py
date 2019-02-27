@@ -98,7 +98,7 @@ def main():
         if arguments["-v"]:
             log_level = logging.DEBUG
         else:
-            log_level = logging.ERROR
+            log_level = logging.CRITICAL
         if arguments["--config"]:
             config_path = arguments["<config_file>"]
         else:

@@ -1,0 +1,9 @@
+[Core]
+Name = jdgu
+Module = jdgu.py
+
+[Documentation]
+Author = Anemone Xu
+Version = 0.1
+Website = http://test.com
+Description = Jdgui Plugin, exported as a gradle project.

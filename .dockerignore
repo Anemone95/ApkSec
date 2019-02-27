@@ -1,0 +1,9 @@
+# comment
+venv
+.git
+.github
+.idea
+.exvim.*
+test/*
+test_apks/*
+ApkSec.vdi

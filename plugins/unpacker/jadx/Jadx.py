@@ -4,6 +4,7 @@
 import subprocess
 import zipfile
 import re
+import os
 import tempfile
 
 import core.controllers.plugin_category as plugin_category
@@ -58,53 +59,37 @@ class Jadx(plugin_category.Unpacker):
         if not self.success:
             logging.error("Jadx not exist.")
             return
-        # if settings.OS == const.WINDOWS:
-        #     self.bin_path = os.path.join(self.bin_dir, "bin", "jadx.bat")
-        #     process = subprocess.Popen(
-        #         "{bin_path} -d {plugin_path} {apk}".format(bin_path=self.bin_path,
-        #                                                    apk=self.apk_path,
-        #                                                    plugin_path=self.plugin_task_path),
-        #         shell=True,
-        #         stdout=subprocess.PIPE,
-        #         stderr=subprocess.PIPE)
-        # else:
-        #     self.bin_path = os.path.join(self.bin_dir, "bin", "jadx")
-        #     process = subprocess.Popen(
-        #         "JAVA_OPTS=\"-Xmx6G -Xms3G\" {bin_path} -d {plugin_path} {apk}".format(bin_path=self.bin_path,
-        #                                                    apk=self.apk_path,
-        #                                                    plugin_path=self.plugin_task_path),
-        #         shell=True,
-        #         stdout=subprocess.PIPE,
-        #         stderr=subprocess.PIPE)
-        #  out_temp=tempfile.SpooledTemporaryFile(bufsize=10*1024)
-        #  fileno=out_temp.fileno()
-        process = subprocess.Popen(
-            "{bin_path} -j 2 -d {plugin_path} {apk} 2>&1".format(bin_path=self.bin_path,
-                                                            apk=self.apk_path,
-                                                            plugin_path=self.plugin_task_path),
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
-        logs = []
-        return_code=process.poll()
-        while return_code is None:
-            line=process.stdout.readline()
-            line=line.strip()
-            logging.debug(line.replace('\n', '').replace('\r', ''))
-            logs.append(line)
-            return_code=process.poll()
-        #  for out_line in iter(process.stdout.readline, b''):
-            #  logging.debug(out_line.replace('\n', '').replace('\r', ''))
-            #  logs.append(out_line)
-        #  process.stdout.close()
-        process.wait()
+        # out_temp=tempfile.SpooledTemporaryFile(bufsize=100*1024)
+        # fileno=out_temp.fileno()
+        # process = subprocess.Popen(
+        #     "{bin_path} -j 2 -d {plugin_path} {apk}".format(bin_path=self.bin_path,
+        #                                                     apk=self.apk_path,
+        #                                                     plugin_path=self.plugin_task_path),
+        #     shell=True,
+        #     stdout=fileno,
+        #     stderr=subprocess.STDOUT)
+        # logs = []
+        # # return_code=process.poll()
+        # # while return_code is None:
+        # #     line=process.stdout.readline()
+        # #     line=line.strip()
+        # #     logging.debug(line.replace('\n', '').replace('\r', ''))
+        # #     logs.append(line)
+        # #     return_code=process.poll()
+        # #  for out_line in iter(process.stdout.readline, b''):
+        #     #  logging.debug(out_line.replace('\n', '').replace('\r', ''))
+        #     #  logs.append(out_line)
+        # #  process.stdout.close()
+        # process.wait()
+        # with open(self.log_file, 'w') as f:
+        #     f.writelines(logs)
 
-        # TODO find error
-        # process.stderr.close()
-        # if len(errs):
-        #     raise UnpackerException(''.join(errs))
-        with open(self.log_file, 'w') as f:
-            f.writelines(logs)
+        os.system("{bin_path} -j 2 -d {plugin_path} {apk} > {log} 2>&1".format(bin_path=self.bin_path,
+                                                            apk=self.apk_path,
+                                                            plugin_path=self.plugin_task_path,
+                                                            log=self.log_file))
+
+
 
 
 if __name__ == '__main__':

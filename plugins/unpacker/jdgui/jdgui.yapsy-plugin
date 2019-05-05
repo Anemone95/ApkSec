@@ -1,6 +1,6 @@
 [Core]
-Name = jdgu
-Module = jdgu.py
+Name = jdgui
+Module = jdgui.py
 
 [Documentation]
 Author = Anemone Xu

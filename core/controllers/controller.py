@@ -90,7 +90,8 @@ def start(apk_path, config_path=None):
     logging.info("Get auditor plugins:" + str(map(lambda e: e.name, auditors)))
     for each_plugin in auditors:
         each_plugin.plugin_object.plugin_launch()
-
+    
+    shutil.rmtree(task_path)
     return ReportDatabase().list_database()
 
 

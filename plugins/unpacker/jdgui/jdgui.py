@@ -21,16 +21,17 @@ from settings import *
 class Jadx(plugin_category.Unpacker):
     def __init__(self):
         plugin_category.Unpacker.__init__(self)
-        url = "https://github.com/skylot/jadx/releases/download/v0.6.1/jadx-0.6.1.zip"
-        name = "jadx.zip"
-        self.bin_dir = os.path.join(os.path.split(os.path.realpath(__file__))[0], "bin")
-        # 下不了
-        self.success, zip_path = download(url, self.bin_dir, name)
-        zip_file = zipfile.ZipFile(zip_path)
-        if not os.path.exists(path=self.bin_dir):
-            zip_file.extractall(path=self.bin_dir)
-        self.bin_path = os.path.join(self.bin_dir, "bin", "jadx")
-        self.log_file = os.path.join(self.plugin_task_path, "jadx.log")
+        return
+        # url = "https://github.com/skylot/jadx/releases/download/v0.6.1/jadx-0.6.1.zip"
+        # name = "jadx.zip"
+        # self.bin_dir = os.path.join(os.path.split(os.path.realpath(__file__))[0], "bin")
+        # # 下不了
+        # self.success, zip_path = download(url, self.bin_dir, name)
+        # zip_file = zipfile.ZipFile(zip_path)
+        # if not os.path.exists(path=self.bin_dir):
+        #     zip_file.extractall(path=self.bin_dir)
+        # self.bin_path = os.path.join(self.bin_dir, "bin", "jadx")
+        # self.log_file = os.path.join(self.plugin_task_path, "jadx.log")
 
     def _ability(self):
         return {TYPE.JAVA: ABILITY.B,
@@ -56,9 +57,8 @@ class Jadx(plugin_category.Unpacker):
         return {TYPE.JAVA: error_files}
 
     def start(self):
-        if not self.success:
-            logging.error("Jadx not exist.")
-            return
+        logging.info("Jdgui not implement.")
+        return
         # out_temp=tempfile.SpooledTemporaryFile(bufsize=100*1024)
         # fileno=out_temp.fileno()
         # process = subprocess.Popen(
@@ -84,10 +84,10 @@ class Jadx(plugin_category.Unpacker):
         # with open(self.log_file, 'w') as f:
         #     f.writelines(logs)
 
-        os.system("{bin_path} -j 2 -d {plugin_path} {apk} > {log} 2>&1".format(bin_path=self.bin_path,
-                                                            apk=self.apk_path,
-                                                            plugin_path=self.plugin_task_path,
-                                                            log=self.log_file))
+        # os.system("{bin_path} -j 2 -d {plugin_path} {apk} > {log} 2>&1".format(bin_path=self.bin_path,
+        #                                                     apk=self.apk_path,
+        #                                                     plugin_path=self.plugin_task_path,
+        #                                                     log=self.log_file))
 
 
 

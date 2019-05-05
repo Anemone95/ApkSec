@@ -18,7 +18,7 @@ V_BACKUP = Vulnerability(name='backup',
                                      u'当该属性没有显式设置为false时,攻击者可通过adb backup和adb restore对App的应用数据进行备份和恢复,'
                                      u'从而可能获取明文存储的用户敏感信息，如用户的密码、证件号、手机号、交易密码、身份令牌、服务器通信记录等。'
                                      u'利用此类信息攻击者可伪造用户身份，盗取用户账户资产，或者直接对服务器发起攻击。',
-                         solution=u'在AndroidManifest.xml中设置android:allowBackup="false"',
+                         solution=u'在AndroidManifest.xml中设置android:allowBackup=\"false\"',
                          risk_level=RISK.MEDIUM)
 V_INFO_LEAKAGE = Vulnerability(name='info_leakage',
                                i18n_name=u'敏感信息泄露',
@@ -115,4 +115,6 @@ V_ROOT_DETECT = Vulnerability(name='root_detect',
                               solution=u'',
                               risk_level=RISK.INFO)
 if __name__ == '__main__':
+    import json
+    print(json.dumps(V_BACKUP.to_dict()))
     pass
